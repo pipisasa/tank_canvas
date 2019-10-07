@@ -15,14 +15,43 @@
     let t34 = new Tank(2,2);
     let walls = [
         new Block(5,5,5),
-        new Block(5,6,5)
+        new Block(5,6,5),
+        new Block(5,7,5),
+        new Block(4,7,5),
+        new Block(3,7,5),
+        new Block(3,6,5),
+        new Block(3,5,5),
+        new Block(4,5,5)
     ];
 
     let swamps = [
-        new Block(6,5),
+        new Block(1,1),
         new Block(6,6)
-    ]
- 
+    ];
+    function SquareBlocks(blocksArr,x,y,width,height){
+        for(let i=0; i<height; i++){
+            for(let a=0; a<width; a++){
+                blocksArr.push(new Block(x+a,y+i))
+            }
+        }
+    }
+
+    // let swamps = [
+    //     [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
+    // ]
+
+    let getLvL1Block = new Block(9,1);
+    let getLvL2Block = new Block(4,6);
+    let getArmoryBlock = new Block(9,3);
+    let getFuelBlock = new Block(9,4)
+
+    let drawGetBlocks = function(){
+        getLvL1Block.drawSquare('blue');
+        getLvL2Block.drawSquare('blue');
+        getArmoryBlock.drawSquare('blue');
+        getFuelBlock.drawSquare('blue');
+    }
+
     function drawBlocks(blocks,color){
         for(let i=0; i<blocks.length; i++){
             blocks[i].drawSquare(color);
@@ -33,6 +62,7 @@
         ctx.clearRect(0, 0, width, height);
         drawBlocks(walls,'red');
         drawBlocks(swamps,'green');
+        drawGetBlocks();
         drawScore();
         drawBorder();
         t34.gunDirection(t34.direction);

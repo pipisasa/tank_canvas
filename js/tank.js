@@ -55,9 +55,9 @@ Block.prototype.equal = function (otherBlock) {
     return this.col === otherBlock.col && this.row === otherBlock.row;
 };
 
-Block.prototype.hit = function(){
-    this.hp--;
-    if(this.hp===0){
+Block.prototype.hit = function(n){
+    this.hp-=n;
+    if(this.hp<=0){
         this.col=-1;
         this.row=-1;
     }
@@ -65,8 +65,9 @@ Block.prototype.hit = function(){
 
 let Tank = function (x,y) {
     this.bullet = [];
+    this.armory = 500;
     this.fuel = 100;
-    this.speed = 100;
+    this.speed = 200;
     this.block = new Block(x,y);
     this.direction = "right";
     this.gunLvL = 1;
@@ -111,37 +112,56 @@ let Tank = function (x,y) {
     };
 };
 // //
-Tank.prototype.move = function () {
-    if(this.fuel<=0){
-        console.log('Fuel is over!')
-        return;
-    }else{
-        this.fuel-=1
-    };
-    let head = this.block;
-    for(let i=0; i<swamps.length; i++){
-        if(head.equal(swamps[i])){
-            this.fuel-=1;
-            break;
-        }
-    }
-    let newHead;
-    this.direction = newDirection;
-    if (this.direction === "right") {
-        newHead = new Block(head.col + 1, head.row);
-    } else if (this.direction === "down") {
-        newHead = new Block(head.col, head.row + 1);
-    } else if (this.direction === "left") {
-        newHead = new Block(head.col - 1, head.row);
-    } else if (this.direction === "up") {
-        newHead = new Block(head.col, head.row - 1);
-    }
-    if (this.checkCollision(newHead)) {
-        newHead = head;
-        this.fuel++;
-    }
-    this.block=newHead;
+Tank.prototype.moveBool = true;
+Tank.prototype.moveBool2= true;
+setMoveSpeed = function(tank){
+    setTimeout(function(){
+        tank.moveBool=true;
+    },tank.speed)
+}
 
+Tank.prototype.move = function () {
+    if(this.moveBool && this.moveBool2){
+        if(this.fuel<=0){
+            console.log('Fuel is over!')
+            return;
+        }else{
+            this.fuel-=1
+        };
+        let head = this.block;
+        for(let i=0; i<swamps.length; i++){
+            if(head.equal(swamps[i])){
+                this.fuel-=1;
+                break;
+            }
+        }
+        if(head.equal(getLvL2Block)){
+            this.gunLvL=2;
+        }else if(head.equal(getLvL1Block)){
+            this.gunLvL=1;
+        }else if(head.equal(getArmoryBlock)){
+            this.armory+=100;
+        }else if(head.equal(getFuelBlock)){
+            this.fuel+=100;
+        }
+        let newHead;
+        if (this.direction === "right") {
+            newHead = new Block(head.col + 1, head.row);
+        } else if (this.direction === "down") {
+            newHead = new Block(head.col, head.row + 1);
+        } else if (this.direction === "left") {
+            newHead = new Block(head.col - 1, head.row);
+        } else if (this.direction === "up") {
+            newHead = new Block(head.col, head.row - 1);
+        }
+        if (this.checkCollision(newHead)) {
+            newHead = head;
+            this.fuel++;
+        }
+        this.block=newHead;
+        this.moveBool = false;
+        setMoveSpeed(this);
+    };
 };
 // // 
 Tank.prototype.checkCollision = function (newHead) {
@@ -168,9 +188,14 @@ Tank.prototype.checkCollision = function (newHead) {
 };
 let bullets=[];
 Tank.prototype.fire = function(){
-    bullets.push(new Bullet);
-    bullets[bullets.length-1].draw();
-    console.log('Fire')
+    if(this.bulletSpeedBool && !this.armory<=0){
+        this.armory-=this.gunLvL;
+        bullets.push(new Bullet);
+        bullets[bullets.length-1].draw();
+        console.log(this.armory)
+        this.bulletSpeedBool = false;
+        setBulletSpeed(this);
+    }
 };
 
 class Bullet{constructor(){
@@ -205,7 +230,7 @@ Bullet.prototype.moveBullet = function(){
         if(this.col === walls[i].col && this.row === walls[i].row){
             this.col=-1;
             this.row=-1;
-            walls[i].hit();
+            walls[i].hit(t34.gunLvL);
         }
     }
 
@@ -213,6 +238,16 @@ Bullet.prototype.moveBullet = function(){
     ctx.fillRect(blockSize*this.col+blockSize*0.4,blockSize*this.row+blockSize*0.4,blockSize*0.2,blockSize*0.2);
 };
 
+Tank.prototype.bulletSpeedBool = true;
+Tank.prototype.bulletSpeed = 500;
+
+let setBulletSpeed = function(tank){
+    setTimeout(function(){
+        tank.bulletSpeedBool = true;
+        // clearTimeout(tankObj.bulletSpeedId);
+        // setBulletSpeed();
+    },tank.bulletSpeed/tank.gunLvL);
+};
 
 let directions = {
     37: "left",
@@ -221,17 +256,31 @@ let directions = {
     40: "down"
 };
 
-let newDirection;
+let moveTimer;
+let moveTimerId =  setInterval(()=>{moveTimer = true},100)
 $("body").keyup(function (event) {
-    newDirection = directions[event.keyCode];
-    if (newDirection !== undefined) {
+    if (directions[event.keyCode] !== undefined && directions[event.keyCode]){
+        t34.direction = directions[event.keyCode];
         // t34.nextDirection = newDirection;
-        t34.move();
+        // moveTimer = false;
     }
 });
-
 $("body").keydown(function(event){
+    let bool = true;
+    if(directions[event.keyCode] !== undefined){
+        if(t34.direction != directions[event.keyCode]){
+            t34.direction = directions[event.keyCode];
+            bool = false
+            setTimeout(function(){
+                bool=true;
+            },500)
+        }
+        if(bool){
+            t34.move();
+        }
+        // if(moveTimer){t34.move()}
+    };
     if(event.keyCode==32){
         t34.fire();
-    }
-})
+    };
+});
