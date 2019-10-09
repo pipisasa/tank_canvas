@@ -9,47 +9,63 @@
     <title>Tank's</title>
 </head>
 <body>
-    <canvas id="canvas" width="400" height="400"></canvas>
+    <canvas id="canvas" width="720" height="640"></canvas>
     <script src="./js/tank.js"></script>
     <script>
     let t34 = new Tank(2,2);
-    let walls = [
-        new Block(5,5,5),
-        new Block(5,6,5),
-        new Block(5,7,5),
-        new Block(4,7,5),
-        new Block(3,7,5),
-        new Block(3,6,5),
-        new Block(3,5,5),
-        new Block(4,5,5)
-    ];
+    let walls = [];
 
-    let swamps = [
-        new Block(1,1),
-        new Block(6,6)
-    ];
-    function SquareBlocks(blocksArr,x,y,width,height){
+    let swamps = [];
+    function SquareBlocks(blocksArr,x,y,width,height, hp){
         for(let i=0; i<height; i++){
             for(let a=0; a<width; a++){
-                blocksArr.push(new Block(x+a,y+i))
+                blocksArr.push(new Block(x+a,y+i,hp))
             }
         }
     }
-
+    walls.push(new Block(1,5,5));
+    walls.push(new Block(3,6,5));
+    walls.push(new Block(5,7,5));
+    walls.push(new Block(1,6,5));
+    walls.push(new Block(7,6,5));
+    walls.push(new Block(9,7,5));
+    walls.push(new Block(11,6,5));
+    walls.push(new Block(13,7,5));
+    walls.push(new Block(13,9,5));
+    walls.push(new Block(11,10,5));
+    walls.push(new Block(7,10,5));
+    walls.push(new Block(3,10,5));
+    walls.push(new Block(3,13,5));
+    walls.push(new Block(6,13,5));
+    walls.push(new Block(6,14,5));
+    // walls.push(new Block(9,9,5));
+    // walls.push(new Block(5,9,5));
+    SquareBlocks(walls,3,10,9,1,5);
+    SquareBlocks(walls,1,8,13,1,5);
+    SquareBlocks(walls,3,5,12,1,5);
+    SquareBlocks(walls,11,12,1,3,10);
+    SquareBlocks(walls,11,11,4,1,10);
+    SquareBlocks(walls,2,12,1,3,5);
+    SquareBlocks(walls,4,12,1,3,5);
+    SquareBlocks(walls,15,2,1,14,20);
+    SquareBlocks(walls,1,15,14,1,20);
+    // SquareBlocks(walls,8,7,1,3,5);
+    
+    SquareBlocks(swamps,1,10,10,5)
     // let swamps = [
     //     [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
     // ]
 
-    let getLvL1Block = new Block(9,1);
-    let getLvL2Block = new Block(4,6);
-    let getArmoryBlock = new Block(9,3);
-    let getFuelBlock = new Block(9,4)
+    let getLvL1Block = new Block(6,12);
+    let getLvL2Block = new Block(13,13);
+    let getArmoryBlock = new Block(1,10);
+    let getFuelBlock = new Block(2,10)
 
     let drawGetBlocks = function(){
-        getLvL1Block.drawSquare('blue');
-        getLvL2Block.drawSquare('blue');
+        getLvL1Block.drawSquare('white');
+        getLvL2Block.drawSquare('black');
         getArmoryBlock.drawSquare('blue');
-        getFuelBlock.drawSquare('blue');
+        getFuelBlock.drawSquare('yellow');
     }
 
     function drawBlocks(blocks,color){
@@ -60,8 +76,8 @@
 
     let intervalId = setInterval(function () {
         ctx.clearRect(0, 0, width, height);
+        drawBlocks(swamps,'#fbaac3');
         drawBlocks(walls,'red');
-        drawBlocks(swamps,'green');
         drawGetBlocks();
         drawScore();
         drawBorder();

@@ -3,7 +3,7 @@ let ctx = canvas.getContext("2d");
 let width = canvas.width;
 let height = canvas.height;
 
-let blockSize = 20;
+let blockSize = 40;
 let widthInBlocks = width / blockSize;
 let heightInBlocks = height / blockSize;
 
@@ -31,7 +31,7 @@ let drawScore = function () {
     ctx.fillStyle = "Black";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
-    ctx.fillText("Score: " + score + '\n' + 'Fuel:' + t34.fuel, blockSize, blockSize);
+    ctx.fillText("Score:" + score + ' Fuel:' + t34.fuel + " Armory:" + t34.armory, blockSize, blockSize);
     };
 
 let Block = function (col, row, hp=null) {
