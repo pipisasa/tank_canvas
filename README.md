@@ -1,6 +1,8 @@
 # tank_canvas
 game "tank" in canvas
 
+## [Demo](https://pipisasa.github.io/tank_canvas/)
+
 Красные блоки это СТЕНЫ.
 У стен есть HitPoint;
 hp стены задано на 5.
